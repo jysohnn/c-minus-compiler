@@ -5,6 +5,8 @@
 char tokenString[MAXTOKENLEN+1];
 %}
 
+%option noyywrap
+
 digit       [0-9]
 number      {digit}+
 letter      [a-zA-Z]
@@ -43,13 +45,23 @@ whitespace  [ \t]+
 {identifier}    {return ID;}
 {newline}       {lineno++;}
 {whitespace}    {/* skip whitespace */}
-/* "/*"            { char c;
-                  do
-                  { c = input();
-                    if (c == EOF) break;
-                    if (c == '\n') lineno++;
-                  } while (c != '}');
-                } */
+"/*"            {char c;
+                 for( ; ; )
+                 {
+                     while((c = input()) != '*' && c != EOF)
+                     {
+                         if(c == '\n') lineno++;
+                     }
+                     if(c == '*')
+                     {
+                         while((c = input()) == '*');
+                         if(c == '\n') lineno++;
+                         if(c == '/') break;
+                     }
+                     if(c == EOF) return COMMENT_ERROR;
+                 }
+                }
+<<EOF>>         {return ENDFILE;}
 .               {return ERROR;}
 
 %%
@@ -66,7 +78,6 @@ TokenType getToken(void)
   currentToken = yylex();
   strncpy(tokenString,yytext,MAXTOKENLEN);
   if (TraceScan) {
-    fprintf(listing,"\t%d: ",lineno);
     printToken(currentToken,tokenString);
   }
   return currentToken;

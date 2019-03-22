@@ -15,18 +15,24 @@
 #endif
 
 /* MAXRESERVED = the number of reserved words */
-#define MAXRESERVED 8
+#define MAXRESERVED 6
 
 typedef enum 
     /* book-keeping tokens */
-   {ENDFILE,ERROR,
+   {ENDFILE, ERROR, COMMENT_ERROR,
     /* reserved words */
-    IF,THEN,ELSE,END,REPEAT,UNTIL,READ,WRITE,
+    ELSE, IF, INT, RETURN, VOID, WHILE,
     /* multicharacter tokens */
-    ID,NUM,
+    ID, NUM,
     /* special symbols */
-    ASSIGN,EQ,LT,PLUS,MINUS,TIMES,OVER,LPAREN,RPAREN,SEMI
+    PLUS, MINUS, TIMES, OVER,
+    LE, LT, GE, GT, EQ, ASSIGN,
+    NE, SEMI, COMMA, LPAREN, RPAREN,
+    LBRACK, RBRACK, LBRACE, RBRACE
    } TokenType;
+
+#define MAXTOKENLEN 40
+TokenType getToken(void);
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -92,5 +98,5 @@ extern int TraceAnalyze;
 extern int TraceCode;
 
 /* Error = TRUE prevents further passes if an error occurs */
-extern int Error; 
+extern int Error;
 #endif

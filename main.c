@@ -12,7 +12,7 @@
 
 #include "util.h"
 #if NO_PARSE
-#include "scan.h"
+//#include "scan.h"
 #else
 #include "parse.h"
 #if !NO_ANALYZE
@@ -31,14 +31,14 @@ FILE * code;
 
 /* allocate and set tracing flags */
 int EchoSource = FALSE;
-int TraceScan = FALSE;
+int TraceScan = TRUE;
 int TraceParse = FALSE;
 int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
 
 int Error = FALSE;
 
-main( int argc, char * argv[] )
+int main( int argc, char * argv[] )
 { TreeNode * syntaxTree;
   char pgm[120]; /* source code file name */
   if (argc != 2)
@@ -54,8 +54,13 @@ main( int argc, char * argv[] )
     exit(1);
   }
   listing = stdout; /* send listing to screen */
-  fprintf(listing,"\nTINY COMPILATION: %s\n",pgm);
+  //fprintf(listing,"\nTINY COMPILATION: %s\n",pgm);
 #if NO_PARSE
+  if(TraceScan)
+  {
+    fprintf(listing, "   line number\t\ttoken\t\tlexeme\n");
+    fprintf(listing, "--------------------------------------------------\n");
+  }
   while (getToken()!=ENDFILE);
 #else
   syntaxTree = parse();

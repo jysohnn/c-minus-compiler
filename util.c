@@ -6,42 +6,38 @@
  */
 void printToken( TokenType token, const char* tokenString )
 { switch (token)
-  { case IF:
-    case THEN:
-    case ELSE:
-    case END:
-    case REPEAT:
-    case UNTIL:
-    case READ:
-    case WRITE:
-      fprintf(listing,
-         "reserved word: %s\n",tokenString);
-      break;
-    case ASSIGN: fprintf(listing,":=\n"); break;
-    case LT: fprintf(listing,"<\n"); break;
-    case EQ: fprintf(listing,"=\n"); break;
-    case LPAREN: fprintf(listing,"(\n"); break;
-    case RPAREN: fprintf(listing,")\n"); break;
-    case SEMI: fprintf(listing,";\n"); break;
-    case PLUS: fprintf(listing,"+\n"); break;
-    case MINUS: fprintf(listing,"-\n"); break;
-    case TIMES: fprintf(listing,"*\n"); break;
-    case OVER: fprintf(listing,"/\n"); break;
-    case ENDFILE: fprintf(listing,"EOF\n"); break;
-    case NUM:
-      fprintf(listing,
-          "NUM, val= %s\n",tokenString);
-      break;
-    case ID:
-      fprintf(listing,
-          "ID, name= %s\n",tokenString);
-      break;
-    case ERROR:
-      fprintf(listing,
-          "ERROR: %s\n",tokenString);
-      break;
-    default: /* should never happen */
-      fprintf(listing,"Unknown token: %d\n",token);
+  {
+    case ENDFILE: fprintf(listing, "\t%d\t\tEOF\n", lineno); break;
+    case ERROR: fprintf(listing, "\t%d\t\tERROR\t\t%s\n", lineno, tokenString); break;
+    case COMMENT_ERROR: fprintf(listing, "\t%d\t\tERROR\t\tComment Error\n", lineno); break;
+    case ELSE: fprintf(listing, "\t%d\t\tELSE\t\t%s\n", lineno, tokenString); break;
+    case IF: fprintf(listing, "\t%d\t\tID\t\t%s\n", lineno, tokenString); break;
+    case INT: fprintf(listing, "\t%d\t\tINT\t\t%s\n", lineno, tokenString); break;
+    case RETURN: fprintf(listing, "\t%d\t\tRETURN\t\t%s\n", lineno, tokenString); break;
+    case VOID: fprintf(listing, "\t%d\t\tVOID\t\t%s\n", lineno, tokenString); break;
+    case WHILE: fprintf(listing, "\t%d\t\tWHILE\t\t%s\n", lineno, tokenString); break;
+    case PLUS: fprintf(listing, "\t%d\t\t+\t\t%s\n", lineno, tokenString); break;
+    case MINUS: fprintf(listing, "\t%d\t\t-\t\t%s\n", lineno, tokenString); break;
+    case TIMES: fprintf(listing, "\t%d\t\t*\t\t%s\n", lineno, tokenString); break;
+    case OVER: fprintf(listing, "\t%d\t\t/\t\t%s\n", lineno, tokenString); break;
+    case LE: fprintf(listing, "\t%d\t\t<=\t\t%s\n", lineno, tokenString); break;
+    case LT: fprintf(listing, "\t%d\t\t<\t\t%s\n", lineno, tokenString); break;
+    case GE: fprintf(listing, "\t%d\t\t>=\t\t%s\n", lineno, tokenString); break;
+    case GT: fprintf(listing, "\t%d\t\t>\t\t%s\n", lineno, tokenString); break;
+    case EQ: fprintf(listing, "\t%d\t\t==\t\t%s\n", lineno, tokenString); break;
+    case ASSIGN: fprintf(listing, "\t%d\t\t=\t\t%s\n", lineno, tokenString); break;
+    case NE: fprintf(listing, "\t%d\t\t!=\t\t%s\n", lineno, tokenString); break;
+    case SEMI: fprintf(listing, "\t%d\t\t;\t\t%s\n", lineno, tokenString); break;
+    case COMMA: fprintf(listing, "\t%d\t\t,\t\t%s\n", lineno, tokenString); break;
+    case LPAREN: fprintf(listing, "\t%d\t\t(\t\t%s\n", lineno, tokenString); break;
+    case RPAREN: fprintf(listing, "\t%d\t\t)\t\t%s\n", lineno, tokenString); break;
+    case LBRACK: fprintf(listing, "\t%d\t\t[\t\t%s\n", lineno, tokenString); break;
+    case RBRACK: fprintf(listing, "\t%d\t\t]\t\t%s\n", lineno, tokenString); break;
+    case LBRACE: fprintf(listing, "\t%d\t\t{\t\t%s\n", lineno, tokenString); break;
+    case RBRACE: fprintf(listing, "\t%d\t\t}\t\t%s\n", lineno, tokenString); break;
+    case NUM: fprintf(listing, "\t%d\t\tNUM\t\t%s\n", lineno, tokenString); break;
+    case ID: fprintf(listing, "\t%d\t\tID\t\t%s\n", lineno, tokenString); break;
+    default: /* should never happen */ break;
   }
 }
 
@@ -100,7 +96,7 @@ char * copyString(char * s)
 /* Variable indentno is used by printTree to
  * store current number of spaces to indent
  */
-static indentno = 0;
+static int indentno = 0;
 
 /* macros to increase/decrease indentation */
 #define INDENT indentno+=2
