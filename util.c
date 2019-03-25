@@ -11,7 +11,7 @@ void printToken( TokenType token, const char* tokenString )
     case ERROR: fprintf(listing, "\t%d\t\tERROR\t\t%s\n", lineno, tokenString); break;
     case COMMENT_ERROR: fprintf(listing, "\t%d\t\tERROR\t\tComment Error\n", lineno); break;
     case ELSE: fprintf(listing, "\t%d\t\tELSE\t\t%s\n", lineno, tokenString); break;
-    case IF: fprintf(listing, "\t%d\t\tID\t\t%s\n", lineno, tokenString); break;
+    case IF: fprintf(listing, "\t%d\t\tIF\t\t%s\n", lineno, tokenString); break;
     case INT: fprintf(listing, "\t%d\t\tINT\t\t%s\n", lineno, tokenString); break;
     case RETURN: fprintf(listing, "\t%d\t\tRETURN\t\t%s\n", lineno, tokenString); break;
     case VOID: fprintf(listing, "\t%d\t\tVOID\t\t%s\n", lineno, tokenString); break;
