@@ -35,11 +35,12 @@ extern int lineno; /* source line number for listing */
 /**************************************************/
 
 typedef enum {StmtK,ExpK,DeclK} NodeKind;
-typedef enum {VaK,VarrK,FuncK,PaK,ParrK} DeclKind;
+typedef enum {VaK,ArrK,FuncK} DeclKind;
 typedef enum {ComK,SelK,IterK,RetK} StmtKind;
 typedef enum {OpK,VarK,NumK,CallK,AssignK} ExpKind;
 
-typedef enum {Void,Integer} DataType;
+typedef enum {Global, Local, Para} VarType;
+typedef enum {Void=0,Integer=1} DataType;
 
 #define MAXCHILDREN 3
 
@@ -51,10 +52,11 @@ typedef struct treeNode
      union { DeclKind decl; StmtKind stmt; ExpKind exp; } kind;
      char* name;
      DataType type;
+     VarType var_type;
      int val;
-     int arr_len;
+     int arr_size;
      int op;
-     int arg_flag, else_flag, return_flag;
+     int else_flag, return_flag;
    } TreeNode;
 
 /**************************************************/

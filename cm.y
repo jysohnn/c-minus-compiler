@@ -58,26 +58,28 @@ declaration         : var_declaration
                         $$ = $1;
                     }
                     ;
-var_declaration     : type_specifier ID
+var_declaration     : type_specifier id_specifier
                     {
                         $$ = $1;
-                        $$->name = copyString(tokenString);
+                        $$->name = savedName;
                         $$->kind.decl = VaK;
+                        $$->var_type = Global;
                     }
                     SEMI
                     {
                         $$ = $1;
                     }
-                    | type_specifier ID
+                    | type_specifier id_specifier
                     {
                         $$ = $1;
-                        $$->name = copyString(tokenString);
-                        $$->kind.decl = VarrK;
+                        $$->name = savedName;
+                        $$->kind.decl = ArrK;
+                        $$->var_type = Global;
                     }
                     LBRACK NUM
                     {
                         $$ = $1;
-                        $$->arr_len = atoi(tokenString);
+                        $$->arr_size = atoi(tokenString);
                     }
                     RBRACK SEMI
                     {
@@ -87,18 +89,18 @@ var_declaration     : type_specifier ID
 type_specifier      : INT
                     {
                         $$ = newDeclNode();
-                        $$->type = INT;
+                        $$->type = Integer;
                     }
 type_specifier      : VOID
                     {
                         $$ = newDeclNode();
-                        $$->type = VOID;
+                        $$->type = Void;
                     }
                     ;
-fun_declaration     : type_specifier ID
+fun_declaration     : type_specifier id_specifier
                     {
                         $$ = $1;
-                        $$->name = copyString(tokenString);
+                        $$->name = savedName;
                         $$->kind.decl = FuncK;
                     }
                     LPAREN params RPAREN compound_stmt
@@ -115,8 +117,9 @@ params              : param-list
                     | VOID
                     {
                         $$ = newDeclNode();
-                        $$->kind.decl = PaK;
-                        $$->type = VOID;
+                        $$->kind.decl = VaK;
+                        $$->var_type = Para;
+                        $$->type = Void;
                         $$->name = NULL;
                     }
                     ;
@@ -136,17 +139,19 @@ param-list          : param-list COMMA param
                         $$ = $1;
                     }
                     ;
-param               : type_specifier ID
+param               : type_specifier id_specifier
                     {
                         $$ = $1;
-                        $$->name = copyString(tokenString);
-                        $$->kind.decl = PaK;
+                        $$->name = savedName;
+                        $$->kind.decl = VaK;
+                        $$->var_type = Para;
                     }
-                    | type_specifier ID
+                    | type_specifier id_specifier
                     {
                         $$ = $1;
-                        $$->name = copyString(tokenString);
-                        $$->kind.decl = ParrK;
+                        $$->name = savedName;
+                        $$->kind.decl = ArrK;
+                        $$->var_type = Para;
                     }
                     LBRACK RBRACK
                     {
@@ -162,6 +167,7 @@ compound_stmt       : LBRACE local_declarations statement_list RBRACE
                     ;
 local_declarations  : local_declarations var_declaration
                     {
+                        $2->var_type = Local;
                         YYSTYPE t = $1;
                         if (t != NULL)
                         {
@@ -240,7 +246,6 @@ selection_stmt     : IF LPAREN expression RPAREN statement
 iteration_stmt      : WHILE LPAREN expression RPAREN statement
                     {
                         $$ = newStmtNode(IterK);
-                        $$->else_flag = 1;
                         $$->child[0] = $3;
                         $$->child[1] = $5;
                     }
@@ -267,15 +272,15 @@ expression          : var ASSIGN expression
                         $$ = $1;
                     }
                     ;
-var                 : ID
+var                 : id_specifier
                     {
                         $$ = newExpNode(VarK);
-                        $$->name = copyString(tokenString);
+                        $$->name = savedName;
                     }
-                    | ID
+                    | id_specifier
                     {
                         $$ = newExpNode(VarK);
-                        $$->name = copyString(tokenString);
+                        $$->name = savedName;
                     }
                     LBRACK expression RBRACK
                     {
@@ -383,13 +388,14 @@ factor              : LPAREN expression RPAREN
                     }
                     | NUM
                     {
-                        $$ = $1;
+                        $$ = newExpNode(NumK);
+                        $$->val = atoi(tokenString);
                     }
                     ;
-call                : ID
+call                : id_specifier
                     {
                         $$ = newExpNode(CallK);
-                        $$->name = copyString(tokenString);
+                        $$->name = savedName;
                     }
                     LPAREN args RPAREN
                     {
@@ -422,7 +428,11 @@ arg_list            : arg_list COMMA expression
                         $$ = $1;
                     }
                     ;
-
+id_specifier        : ID
+                    {
+                        savedName = copyString(tokenString);
+                    }
+                    ;
 %%
 
 int yyerror(char * message)
@@ -434,7 +444,11 @@ int yyerror(char * message)
 }
 
 static int yylex(void)
-{ return getToken(); }
+{
+    int t = getToken();
+    if(t == ENDFILE) return 0;
+    else return t; 
+}
 
 TreeNode * parse(void)
 { yyparse();
