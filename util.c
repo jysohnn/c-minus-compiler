@@ -41,46 +41,56 @@ void printToken( TokenType token, const char* tokenString )
   }
 }
 
-/* Function newStmtNode creates a new statement
- * node for syntax tree construction
- */
-TreeNode * newStmtNode(StmtKind kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+TreeNode * newDeclNode()
+{
+  TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
   int i;
   if (t==NULL)
     fprintf(listing,"Out of memory error at line %d\n",lineno);
   else {
     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+    t->lineno = lineno;
+    t->sibling = NULL;
+    t->nodekind = DeclK;
+    t->arg_flag = t->else_flag = t->return_flag = 0;
+  }
+  return t;
+}
+
+TreeNode * newStmtNode(StmtKind kind)
+{
+  TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+  int i;
+  if (t==NULL)
+    fprintf(listing,"Out of memory error at line %d\n",lineno);
+  else {
+    for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+    t->lineno = lineno;
     t->sibling = NULL;
     t->nodekind = StmtK;
     t->kind.stmt = kind;
-    t->lineno = lineno;
+    t->arg_flag = t->else_flag = t->return_flag = 0;
   }
   return t;
 }
 
-/* Function newExpNode creates a new expression 
- * node for syntax tree construction
- */
 TreeNode * newExpNode(ExpKind kind)
-{ TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
+{
+  TreeNode * t = (TreeNode *) malloc(sizeof(TreeNode));
   int i;
   if (t==NULL)
     fprintf(listing,"Out of memory error at line %d\n",lineno);
   else {
     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
+    t->lineno = lineno;
     t->sibling = NULL;
     t->nodekind = ExpK;
     t->kind.exp = kind;
-    t->lineno = lineno;
-    t->type = Void;
+    t->arg_flag = t->else_flag = t->return_flag = 0;
   }
   return t;
 }
 
-/* Function copyString allocates and makes a new
- * copy of an existing string
- */
 char * copyString(char * s)
 { int n;
   char * t;
@@ -114,6 +124,7 @@ static void printSpaces(void)
  */
 void printTree( TreeNode * tree )
 { int i;
+/*
   INDENT;
   while (tree != NULL) {
     printSpaces();
@@ -162,4 +173,5 @@ void printTree( TreeNode * tree )
     tree = tree->sibling;
   }
   UNINDENT;
+  */
 }

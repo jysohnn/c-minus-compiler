@@ -16,23 +16,13 @@
 
 /* MAXRESERVED = the number of reserved words */
 #define MAXRESERVED 6
-
-typedef enum 
-    /* book-keeping tokens */
-   {ENDFILE, ERROR, COMMENT_ERROR,
-    /* reserved words */
-    ELSE, IF, INT, RETURN, VOID, WHILE,
-    /* multicharacter tokens */
-    ID, NUM,
-    /* special symbols */
-    PLUS, MINUS, TIMES, OVER,
-    LE, LT, GE, GT, EQ, ASSIGN,
-    NE, SEMI, COMMA, LPAREN, RPAREN,
-    LBRACK, RBRACK, LBRACE, RBRACE
-   } TokenType;
-
 #define MAXTOKENLEN 40
-TokenType getToken(void);
+
+#ifndef YYPARSER
+#include "cm.tab.h"
+#endif
+
+typedef int TokenType;
 
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
@@ -44,12 +34,12 @@ extern int lineno; /* source line number for listing */
 /***********   Syntax tree for parsing ************/
 /**************************************************/
 
-typedef enum {StmtK,ExpK} NodeKind;
-typedef enum {IfK,RepeatK,AssignK,ReadK,WriteK} StmtKind;
-typedef enum {OpK,ConstK,IdK} ExpKind;
+typedef enum {StmtK,ExpK,DeclK} NodeKind;
+typedef enum {VaK,VarrK,FuncK,PaK,ParrK} DeclKind;
+typedef enum {ComK,SelK,IterK,RetK} StmtKind;
+typedef enum {OpK,VarK,NumK,CallK,AssignK} ExpKind;
 
-/* ExpType is used for type checking */
-typedef enum {Void,Integer,Boolean} ExpType;
+typedef enum {Void,Integer} DataType;
 
 #define MAXCHILDREN 3
 
@@ -58,11 +48,13 @@ typedef struct treeNode
      struct treeNode * sibling;
      int lineno;
      NodeKind nodekind;
-     union { StmtKind stmt; ExpKind exp;} kind;
-     union { TokenType op;
-             int val;
-             char * name; } attr;
-     ExpType type; /* for type checking of exps */
+     union { DeclKind decl; StmtKind stmt; ExpKind exp; } kind;
+     char* name;
+     DataType type;
+     int val;
+     int arr_len;
+     int op;
+     int arg_flag, else_flag, return_flag;
    } TreeNode;
 
 /**************************************************/

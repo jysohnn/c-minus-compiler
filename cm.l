@@ -1,5 +1,6 @@
 %{
 #include "globals.h"
+#include "scan.h"
 #include "util.h"
 /* lexeme of identifier or reserved word */
 char tokenString[MAXTOKENLEN+1];
