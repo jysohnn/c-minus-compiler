@@ -58,7 +58,7 @@ declaration         : var_declaration
                         $$ = $1;
                     }
                     ;
-var_declaration     : type_specifier id_specifier
+var_declaration     : type_specifier ID
                     {
                         $$ = $1;
                         $$->name = savedName;
@@ -69,7 +69,7 @@ var_declaration     : type_specifier id_specifier
                     {
                         $$ = $1;
                     }
-                    | type_specifier id_specifier
+                    | type_specifier ID
                     {
                         $$ = $1;
                         $$->name = savedName;
@@ -97,7 +97,7 @@ type_specifier      : VOID
                         $$->type = Void;
                     }
                     ;
-fun_declaration     : type_specifier id_specifier
+fun_declaration     : type_specifier ID
                     {
                         $$ = $1;
                         $$->name = savedName;
@@ -139,14 +139,14 @@ param-list          : param-list COMMA param
                         $$ = $1;
                     }
                     ;
-param               : type_specifier id_specifier
+param               : type_specifier ID
                     {
                         $$ = $1;
                         $$->name = savedName;
                         $$->kind.decl = VaK;
                         $$->var_type = Para;
                     }
-                    | type_specifier id_specifier
+                    | type_specifier ID
                     {
                         $$ = $1;
                         $$->name = savedName;
@@ -272,12 +272,12 @@ expression          : var ASSIGN expression
                         $$ = $1;
                     }
                     ;
-var                 : id_specifier
+var                 : ID
                     {
                         $$ = newExpNode(VarK);
                         $$->name = savedName;
                     }
-                    | id_specifier
+                    | ID
                     {
                         $$ = newExpNode(VarK);
                         $$->name = savedName;
@@ -392,7 +392,7 @@ factor              : LPAREN expression RPAREN
                         $$->val = atoi(tokenString);
                     }
                     ;
-call                : id_specifier
+call                : ID
                     {
                         $$ = newExpNode(CallK);
                         $$->name = savedName;
@@ -428,29 +428,28 @@ arg_list            : arg_list COMMA expression
                         $$ = $1;
                     }
                     ;
-id_specifier        : ID
-                    {
-                        savedName = copyString(tokenString);
-                    }
-                    ;
 %%
 
 int yyerror(char * message)
-{ fprintf(listing,"Syntax error at line %d: %s\n",lineno,message);
-  fprintf(listing,"Current token: ");
-  printToken(yychar,tokenString);
-  Error = TRUE;
-  return 0;
+{
+    fprintf(listing,"Syntax error at line %d: %s\n",lineno,message);
+    fprintf(listing,"Current token: ");
+    printToken(yychar,tokenString);
+    Error = TRUE;
+    return 0;
 }
 
 static int yylex(void)
 {
-    int t = getToken();
+    int t;
+    savedName = copyString(tokenString);
+    t = getToken();
     if(t == ENDFILE) return 0;
-    else return t; 
+    else return t;
 }
 
 TreeNode * parse(void)
-{ yyparse();
-  return savedTree;
+{
+    yyparse();
+    return savedTree;
 }
