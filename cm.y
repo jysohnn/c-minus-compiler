@@ -110,7 +110,7 @@ fun_declaration     : type_specifier ID
                         $$->child[1] = $7;
                     }
                     ;
-params              : param-list
+params              : param_list
                     {
                         $$ = $1;
                     }
@@ -123,7 +123,7 @@ params              : param-list
                         $$->name = NULL;
                     }
                     ;
-param-list          : param-list COMMA param
+param_list          : param_list COMMA param
                     {
                         YYSTYPE t = $1;
                         if (t != NULL)
