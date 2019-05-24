@@ -1,5 +1,5 @@
 20131565 : main.o util.o lex.yy.o cm.tab.o analyze.o symtab.o
-	gcc -W -o 20131565 main.o util.o lex.yy.o cm.tab.o
+	gcc -W -o 20131565 main.o util.o lex.yy.o cm.tab.o analyze.o symtab.o
 main.o : main.c lex.yy.c cm.tab.c cm.tab.h
 	gcc -W -c main.c
 util.o : util.c lex.yy.c cm.tab.c cm.tab.h
@@ -12,9 +12,9 @@ cm.tab.o : cm.tab.c cm.tab.h
 	gcc -W -c cm.tab.c
 cm.tab.c cm.tab.h : cm.y
 	bison -d -v cm.y
-analyze.o : analyze.c
+analyze.o : analyze.c cm.tab.c cm.tab.h
 	gcc -W -c analyze.c
-symtab.o : symtab.c
+symtab.o : symtab.c cm.tab.c cm.tab.h
 	gcc -W -c symtab.c
 clean:
 	rm 20131565 main.o util.o lex.yy.o lex.yy.c cm.tab.o cm.tab.c cm.tab.h cm.output analyze.o symtab.o
