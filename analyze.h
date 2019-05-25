@@ -6,6 +6,8 @@
  */
 void buildSymtab(TreeNode *);
 
+void printSymtab(TreeNode * syntaxTree);
+
 /* Procedure typeCheck performs type checking 
  * by a postorder syntax tree traversal
  */

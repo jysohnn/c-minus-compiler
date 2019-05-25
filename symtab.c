@@ -6,7 +6,8 @@
 #define SHIFT 4
 
 static int hash ( char * key )
-{ int temp = 0;
+{
+  int temp = 0;
   int i = 0;
   while (key[i] != '\0')
   { temp = ((temp << SHIFT) + key[i]) % SIZE;
@@ -111,9 +112,13 @@ void symbol_insert_global(char * name, int lineno)
 BucketList symbol_lookup(char * name)
 {
   int h = hash(name);
-  BucketList l = cur_scope->hashTable[h];
-  while ((l != NULL) && (strcmp(name,l->name) != 0)) l = l->next;
-  return l;
+  if(cur_scope != NULL)
+  {
+    BucketList l = cur_scope->hashTable[h];
+    while ((l != NULL) && (strcmp(name,l->name) != 0)) l = l->next;
+    return l;
+  }
+  return NULL;
 }
 
 BucketList symbol_lookup_global(char * name)
@@ -130,7 +135,7 @@ BucketList symbol_lookup_global(char * name)
   return NULL;
 }
 
-void printSymTab(FILE * listing)
+void print_table(FILE * listing)
 {
   int i;
   fprintf(listing,"Name\tScope\tLoc\tV/P/F\tArray?\tArrSize\ttype\tLine Numbers\n");
@@ -142,6 +147,7 @@ void printSymTab(FILE * listing)
       BucketList l = cur_scope->hashTable[i];
       while(l != NULL)
       {
+        int prev_lineno = -1;
         LineList t = l->lines;
         fprintf(listing, "%s\t", l->name);
         fprintf(listing, "%d\t", cur_scope->level);
@@ -173,7 +179,8 @@ void printSymTab(FILE * listing)
         }
         while (t != NULL)
         {
-          fprintf(listing,"%d\t",t->lineno);
+          if(t->lineno != prev_lineno) fprintf(listing,"%d\t",t->lineno);
+          prev_lineno = t->lineno;
           t = t->next;
         }
         fprintf(listing,"\n");

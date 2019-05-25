@@ -44,6 +44,6 @@ BucketList symbol_lookup(char * name);
 
 BucketList symbol_lookup_global(char * name);
 
-void printSymTab(FILE * listing);
+void print_table(FILE * listing);
 
 #endif
