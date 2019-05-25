@@ -55,6 +55,7 @@ TreeNode * newDeclNode()
     t->sibling = NULL;
     t->nodekind = DeclK;
     t->type = -1;
+    t->arr_size = 0;
     t->else_flag = t->return_flag = t->func_flag = 0;
   }
   return t;

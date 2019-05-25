@@ -168,8 +168,8 @@ void printSymTab(FILE * listing)
         {
           fprintf(listing, "No\t");
           fprintf(listing, "-\t");
-          if(l->type == VOID) fprintf(listing, "VOID\t");
-          else fprintf(listing, "INT\t");
+          if(l->type == VOID) fprintf(listing, "void\t");
+          else fprintf(listing, "int\t");
         }
         while (t != NULL)
         {

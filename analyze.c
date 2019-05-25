@@ -10,15 +10,19 @@ static int func_num = 0;
 
 static void traverse(TreeNode * t, void (* preProc) (TreeNode *), void (* postProc) (TreeNode *))
 {
+  if(Error) return;
   if (t != NULL)
   {
+    int i;
     preProc(t);
+    if(Error) return;
+    for (i=0; i < MAXCHILDREN; i++)
     {
-      int i;
-      for (i=0; i < MAXCHILDREN; i++)
-        traverse(t->child[i],preProc,postProc);
+      traverse(t->child[i],preProc,postProc);
+      if(Error) return;
     }
     postProc(t);
+    if(Error) return;
     traverse(t->sibling,preProc,postProc);
   }
 }
@@ -79,7 +83,7 @@ static void symbol_pre(TreeNode * t)
               symbol_insert(t->name, local_location, V, 1, t->arr_size, INT, t->lineno);
               break;
             case Para:
-              para_location += 4 * t->arr_size;
+              para_location += 4;
               symbol_insert(t->name, para_location, P, 1, t->arr_size, INT, t->lineno);
               break;
           }
