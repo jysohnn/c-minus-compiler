@@ -55,7 +55,7 @@ TreeNode * newDeclNode()
     t->sibling = NULL;
     t->nodekind = DeclK;
     t->type = -1;
-    t->else_flag = t->return_flag = 0;
+    t->else_flag = t->return_flag = t->func_flag = 0;
   }
   return t;
 }
@@ -72,7 +72,7 @@ TreeNode * newStmtNode(StmtKind kind)
     t->sibling = NULL;
     t->nodekind = StmtK;
     t->kind.stmt = kind;
-    t->else_flag = t->return_flag = 0;
+    t->else_flag = t->return_flag = t->func_flag = 0;
   }
   return t;
 }
@@ -89,7 +89,7 @@ TreeNode * newExpNode(ExpKind kind)
     t->sibling = NULL;
     t->nodekind = ExpK;
     t->kind.exp = kind;
-    t->else_flag = t->return_flag = 0;
+    t->else_flag = t->return_flag = t->func_flag = 0;
   }
   return t;
 }
@@ -212,6 +212,9 @@ void printTree( TreeNode * tree )
           }
           break;
         case VarK:
+          fprintf(listing,"Id: %s\n", tree->name);
+          break;
+        case ArrrK:
           fprintf(listing,"Id: %s\n", tree->name);
           break;
         case NumK:

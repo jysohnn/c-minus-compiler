@@ -37,7 +37,7 @@ extern int lineno; /* source line number for listing */
 typedef enum {StmtK,ExpK,DeclK} NodeKind;
 typedef enum {VaK,ArrK,FuncK} DeclKind;
 typedef enum {ComK,SelK,IterK,RetK} StmtKind;
-typedef enum {OpK,VarK,NumK,CallK,AssignK} ExpKind;
+typedef enum {OpK,VarK,ArrrK,NumK,CallK,AssignK} ExpKind;
 
 typedef enum {Global, Local, Para} VarType;
 typedef enum {Void=0,Integer=1} DataType;
@@ -56,7 +56,7 @@ typedef struct treeNode
      int val;
      int arr_size;
      int op;
-     int else_flag, return_flag;
+     int else_flag, return_flag, func_flag;
    } TreeNode;
 
 /**************************************************/
