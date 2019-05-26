@@ -65,7 +65,7 @@ void scope_pop()
   }
 }
 
-void symbol_insert(char * name, int memloc, int var_type, int is_array, int arr_size, int type, int lineno)
+void symbol_insert(char * name, int memloc, int var_type, int is_array, int arr_size, int type, int lineno, TreeNode * node)
 {
   int h = hash(name);
   BucketList l =  cur_scope->hashTable[h];
@@ -82,6 +82,7 @@ void symbol_insert(char * name, int memloc, int var_type, int is_array, int arr_
     l->is_array = is_array;
     l->arr_size = arr_size;
     l->type = type;
+    l->node = node;
     l->next = cur_scope->hashTable[h];
     cur_scope->hashTable[h] = l;
   }
@@ -174,7 +175,7 @@ void print_table(FILE * listing)
         {
           fprintf(listing, "No\t");
           fprintf(listing, "-\t");
-          if(l->type == VOID) fprintf(listing, "void\t");
+          if(l->type == 0) fprintf(listing, "void\t");
           else fprintf(listing, "int\t");
         }
         while (t != NULL)

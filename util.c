@@ -88,8 +88,11 @@ TreeNode * newExpNode(ExpKind kind)
     for (i=0;i<MAXCHILDREN;i++) t->child[i] = NULL;
     t->lineno = lineno;
     t->sibling = NULL;
+    t->friend = NULL;
     t->nodekind = ExpK;
     t->kind.exp = kind;
+    t->array_type = 0;
+    t->func_type = 0;
     t->else_flag = t->return_flag = t->func_flag = 0;
   }
   return t;

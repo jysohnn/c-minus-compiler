@@ -418,9 +418,9 @@ arg_list            : arg_list COMMA expression
                         YYSTYPE t = $1;
                         if (t != NULL)
                         {
-                            while (t->sibling != NULL) t = t->sibling;
-                            t->sibling = $3;
-                            $$ = $1;
+                            YYSTYPE tt = $3;
+                            tt->sibling = $1;
+                            $$ = $3;
                         }
                         else $$ = $3;
                     }

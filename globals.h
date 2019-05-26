@@ -47,6 +47,7 @@ typedef enum {Void=0,Integer=1} DataType;
 typedef struct treeNode
    { struct treeNode * child[MAXCHILDREN];
      struct treeNode * sibling;
+     struct treeNode * friend;
      int lineno;
      NodeKind nodekind;
      union { DeclKind decl; StmtKind stmt; ExpKind exp; } kind;
@@ -54,6 +55,8 @@ typedef struct treeNode
      DataType type;
      VarType var_type;
      int val;
+     int array_type;
+     int func_type;
      int arr_size;
      int op;
      int else_flag, return_flag, func_flag;
