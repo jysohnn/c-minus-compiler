@@ -289,7 +289,7 @@ static void check_pre(TreeNode * t)
       switch (t->kind.exp)
       {
         case AssignK:
-          if(!((t->child[0]->kind.exp == VarK && t->child[0]->array_type == 0) || (t->child[0]->kind.exp == ArrrK)))
+          if(!((t->child[0]->kind.exp == VarK && !t->child[0]->array_type && !t->child[0]->func_type) || (t->child[0]->kind.exp == ArrrK)))
           {
             printError(t, 9);
             return;
