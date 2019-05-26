@@ -249,13 +249,17 @@ void buildSymtab(TreeNode * syntaxTree)
 
 void printSymtab(TreeNode * syntaxTree)
 {
+  symbol_table_print = 1;
+  main_decl = 0;
+  ret_exist = 0;
+  ret_type = 0;
+
   global_location = 0;
   local_location = -4;
   para_location = 0;
-  local_location_tmp = 0;
   func_num = 0;
-  main_decl = 0;
-  symbol_table_print = 1;
+  local_location_tmp = 0;
+
   scope_push();
   if (TraceAnalyze) fprintf(listing,"\nSymbol table:\n\n");
   traverse(syntaxTree, symbol_pre, symbol_post);
