@@ -73,7 +73,7 @@ int main( int argc, char * argv[] )
   { //if (TraceAnalyze) fprintf(listing,"\nBuilding Symbol Table...\n");
     buildSymtab(syntaxTree);
     //if (TraceAnalyze) fprintf(listing,"\nChecking Types...\n");
-    //typeCheck(syntaxTree);
+    typeCheck(syntaxTree);
     if(TraceAnalyze && !Error) printSymtab(syntaxTree);
     //if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
   }

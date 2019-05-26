@@ -28,8 +28,6 @@ static void printError(TreeNode * t, int error_type)
     case 3:
       fprintf(listing, "The 'main' function should not have parameters.\n");
       break;
-    default:
-      break;
   }
   Error = TRUE;
 }
@@ -101,8 +99,6 @@ static void symbol_pre(TreeNode * t)
                 symbol_insert(t->name, para_location, P, 0, 0, INT, t->lineno);
               }
               break;
-            default:
-              break;
           }
           break;
         case ArrK:
@@ -119,8 +115,6 @@ static void symbol_pre(TreeNode * t)
             case Para:
               para_location += 4;
               symbol_insert(t->name, para_location, P, 1, t->arr_size, INT, t->lineno);
-              break;
-            default:
               break;
           }
           break;
@@ -139,7 +133,6 @@ static void symbol_pre(TreeNode * t)
               return;
             }
           }
-
           local_location = -4;
           para_location = 0;
           if(t->type == Integer) symbol_insert(t->name, func_num++, F, 0, 0, INT, t->lineno);
@@ -153,8 +146,6 @@ static void symbol_pre(TreeNode * t)
       {
         case ComK:
           if(t->func_flag == 0) scope_push();
-          break;
-        default:
           break;
       }
       break;
@@ -171,11 +162,7 @@ static void symbol_pre(TreeNode * t)
           }
           symbol_insert_global(t->name, t->lineno);
           break;
-        default:
-          break;
       }
-      break;
-    default:
       break;
   }
 }
@@ -202,59 +189,139 @@ void printSymtab(TreeNode * syntaxTree)
   scope_pop();
 }
 
-/* Procedure checkNode performs
- * type checking at a single tree node
- */
-/* static void checkNode(TreeNode * t)
-{ switch (t->nodekind)
-  { case ExpK:
-      switch (t->kind.exp)
-      { case OpK:
-          if ((t->child[0]->type != Integer) ||
-              (t->child[1]->type != Integer))
-            typeError(t,"Op applied to non-integer");
-          if ((t->attr.op == EQ) || (t->attr.op == LT))
-            t->type = Boolean;
-          else
-            t->type = Integer;
+static void check_pre(TreeNode * t)
+{
+  switch (t->nodekind)
+  {
+    case DeclK:
+      switch (t->kind.decl)
+      {
+        case VaK:
+          switch (t->var_type)
+          {
+            case Global:
+              break;
+            case Local:
+              break;
+            case Para:
+              break;
+          }
           break;
-        case ConstK:
-        case IdK:
-          t->type = Integer;
+        case ArrK:
+          switch (t->var_type)
+          {
+            case Global:
+              break;
+            case Local:
+              break;
+            case Para:
+              break;
+          }
           break;
-        default:
+        case FuncK:
           break;
       }
       break;
     case StmtK:
       switch (t->kind.stmt)
-      { case IfK:
-          if (t->child[0]->type == Integer)
-            typeError(t->child[0],"if test is not Boolean");
+      {
+        case ComK:
           break;
-        case AssignK:
-          if (t->child[0]->type != Integer)
-            typeError(t->child[0],"assignment of non-integer value");
+        case SelK:
           break;
-        case WriteK:
-          if (t->child[0]->type != Integer)
-            typeError(t->child[0],"write of non-integer value");
+        case IterK:
           break;
-        case RepeatK:
-          if (t->child[1]->type == Integer)
-            typeError(t->child[1],"repeat test is not Boolean");
-          break;
-        default:
+        case RetK:
           break;
       }
       break;
-    default:
+    case ExpK:
+      switch (t->kind.exp)
+      {
+        case OpK:
+          break;
+        case VarK:
+          break;
+        case ArrrK:
+          break;
+        case NumK:
+          break;
+         case CallK:
+          break;
+        case AssignK:
+          break;
+      }
       break;
+  }
+}
 
+static void check_post(TreeNode * t)
+{
+    switch (t->nodekind)
+  {
+    case DeclK:
+      switch (t->kind.decl)
+      {
+        case VaK:
+          switch (t->var_type)
+          {
+            case Global:
+              break;
+            case Local:
+              break;
+            case Para:
+              break;
+          }
+          break;
+        case ArrK:
+          switch (t->var_type)
+          {
+            case Global:
+              break;
+            case Local:
+              break;
+            case Para:
+              break;
+          }
+          break;
+        case FuncK:
+          break;
+      }
+      break;
+    case StmtK:
+      switch (t->kind.stmt)
+      {
+        case ComK:
+          break;
+        case SelK:
+          break;
+        case IterK:
+          break;
+        case RetK:
+          break;
+      }
+      break;
+    case ExpK:
+      switch (t->kind.exp)
+      {
+        case OpK:
+          break;
+        case VarK:
+          break;
+        case ArrrK:
+          break;
+        case NumK:
+          break;
+         case CallK:
+          break;
+        case AssignK:
+          break;
+      }
+      break;
   }
 }
 
 void typeCheck(TreeNode * syntaxTree)
-{ traverse(syntaxTree,nullProc,checkNode);
+{
+  traverse(syntaxTree,check_pre,check_post);
 }
-*/
