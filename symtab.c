@@ -140,8 +140,8 @@ BucketList symbol_lookup_global(char * name)
 void print_table(FILE * listing)
 {
   int i;
-  fprintf(listing,"Name\tScope\tLoc\tV/P/F\tArray?\tArrSize\ttype\tLine Numbers\n");
-  fprintf(listing,"------------------------------------------------------------------------\n");
+  fprintf(listing,"%-15s\tScope\tLoc\tV/P/F\tArray?\tArrSize\ttype\tLine Numbers\n", "Name");
+  fprintf(listing,"-----------------------------------------------------------------------------\n");
   for(i=0; i<SIZE; i++)
   {
     if(cur_scope->hashTable[i] != NULL)
@@ -151,7 +151,7 @@ void print_table(FILE * listing)
       {
         int prev_lineno = -1;
         LineList t = l->lines;
-        fprintf(listing, "%s\t", l->name);
+        fprintf(listing, "%-15s\t", l->name);
         fprintf(listing, "%d\t", cur_scope->level);
         fprintf(listing, "%d\t", l->memloc);
         switch (l->var_type)

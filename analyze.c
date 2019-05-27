@@ -2,6 +2,7 @@
 #include "symtab.h"
 #include "analyze.h"
 
+static TreeNode * mt = NULL;
 static int symbol_table_print = 0;
 static int main_decl = 0;
 static int ret_exist = 0;
@@ -43,10 +44,10 @@ static void printError(TreeNode * t, int error_type)
       fprintf(listing, "'%s' is not function.\n", t->name);
       break;
     case 8:
-      fprintf(listing, "The type of l-value and r-value are different.\n");
+      fprintf(listing, "The r-value of 'Assign' should be 'int' type.\n");
       break;
     case 9:
-      fprintf(listing, "The l-value should be variable.\n");
+      fprintf(listing, "The l-value of 'Assign' should be variable.\n");
       break;
     case 10:
       fprintf(listing, "The 'main' function should return a void type.\n");
@@ -138,12 +139,13 @@ static void symbol_pre(TreeNode * t)
         case FuncK:
           if(main_decl)
           {
-            printError(t, 2);
+            printError(mt, 2);
             return;
           }
           if(strcmp(t->name, "main") == 0)
           {
             main_decl = 1;
+            mt = t;
             if(t->child[0]->type != Void)
             {
               printError(t, 3);
@@ -247,6 +249,7 @@ void buildSymtab(TreeNode * syntaxTree)
 
 void printSymtab(TreeNode * syntaxTree)
 {
+  mt = NULL;
   symbol_table_print = 1;
   main_decl = 0;
   ret_exist = 0;
