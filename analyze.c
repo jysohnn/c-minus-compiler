@@ -61,6 +61,9 @@ static void printError(TreeNode * t, int error_type)
     case 13:
       fprintf(listing, "The parameter and argument are different (Number or Type).\n");
       break;
+    case 14:
+      fprintf(listing, "The index value should be 'int' type.\n");
+      break;
   }
   Error = TRUE;
 }
@@ -90,7 +93,7 @@ static void symbol_pre(TreeNode * t)
   switch (t->nodekind)
   {
     case DeclK:
-      if(!(t->var_type == Para && t->type == Void) && symbol_lookup(t->name) != NULL)
+      if(!(t->var_type == Para && t->type == Void && t->name == NULL) && symbol_lookup(t->name) != NULL)
       {
         printError(t, 1);
         return;
@@ -110,7 +113,7 @@ static void symbol_pre(TreeNode * t)
               symbol_insert(t->name, local_location, V, 0, 0, 1, t->lineno, t);
               break;
             case Para:
-              if(t->type != Void)
+              if(!(t->type == Void && t->name == NULL))
               {
                 para_location += 4;
                 symbol_insert(t->name, para_location, P, 0, 0, 1, t->lineno, t);
@@ -381,7 +384,7 @@ static void check_post(TreeNode * t)
         case ArrrK:
           if(!(t->child[0]->type == Integer && !t->child[0]->array_type && !t->child[0]->func_type))
           {
-            printError(t, 5);
+            printError(t, 14);
             return;
           }
           break;
