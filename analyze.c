@@ -431,7 +431,7 @@ static void check_post(TreeNode * t)
           }
           break;
         case AssignK:
-          if(t->child[1]->type != Integer)
+          if(!(t->child[1]->type == Integer && !t->child[1]->array_type && !t->child[1]->func_type))
           {
             printError(t, 8);
             return;
