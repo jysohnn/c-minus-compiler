@@ -29,9 +29,12 @@ typedef struct BucketListRec
 typedef struct ScopeListRec
 {
   int level;
+  int local_location_using;
   struct BucketListRec * hashTable[SIZE];
   struct ScopeListRec * next;
 } * ScopeList;
+
+extern ScopeList cur_scope;
 
 void scope_push();
 

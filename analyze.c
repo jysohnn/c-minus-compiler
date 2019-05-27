@@ -12,7 +12,6 @@ static int global_location = 0;
 static int local_location = -4;
 static int para_location = 0;
 static int func_num = 0;
-static int local_location_tmp = 0;
 
 static void printError(TreeNode * t, int error_type)
 {
@@ -106,7 +105,7 @@ static void symbol_pre(TreeNode * t)
               break;
             case Local:
               local_location -= 4;
-              local_location_tmp -= 4;
+              cur_scope->local_location_using -= 4;
               symbol_insert(t->name, local_location, V, 0, 0, 1, t->lineno, t);
               break;
             case Para:
@@ -127,7 +126,7 @@ static void symbol_pre(TreeNode * t)
               break;
             case Local:
               local_location -= 4 * t->arr_size;
-              local_location_tmp -= 4 * t->arr_size;
+              cur_scope->local_location_using -= 4 * t->arr_size;
               symbol_insert(t->name, local_location, V, 1, t->arr_size, 1, t->lineno, t);
               break;
             case Para:
@@ -169,7 +168,6 @@ static void symbol_pre(TreeNode * t)
       {
         case ComK:
           if(t->func_flag == 0) scope_push();
-          local_location_tmp = 0;
           break;
       }
       break;
@@ -233,7 +231,7 @@ static void symbol_post(TreeNode * t)
   {
     if(t->nodekind == StmtK && t->kind.stmt == ComK)
     {
-      local_location -= local_location_tmp;
+      local_location -= cur_scope->local_location_using;
       if(TraceAnalyze && symbol_table_print) print_table(listing);
       scope_pop();
     }
@@ -258,7 +256,6 @@ void printSymtab(TreeNode * syntaxTree)
   local_location = -4;
   para_location = 0;
   func_num = 0;
-  local_location_tmp = 0;
 
   scope_push();
   if (TraceAnalyze) fprintf(listing,"\nSymbol table:\n\n");

@@ -24,6 +24,7 @@ void scope_push()
   int i;
   ScopeList new_scope = (ScopeList)malloc(sizeof(struct ScopeListRec));
   for(i=0; i<SIZE; i++) new_scope->hashTable[i] = NULL;
+  new_scope->local_location_using = 0;
   new_scope->next = NULL;
   
   if(cur_scope == NULL)
