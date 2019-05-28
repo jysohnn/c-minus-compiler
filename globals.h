@@ -58,6 +58,8 @@ typedef struct treeNode
      int array_type;
      int func_type;
      int arr_size;
+     int is_array;
+     int is_func;
      int op;
      int else_flag, return_flag, func_flag;
    } TreeNode;

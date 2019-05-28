@@ -3,7 +3,6 @@
 #include "analyze.h"
 
 static TreeNode * mt = NULL;
-static int symbol_table_print = 0;
 static int main_decl = 0;
 static int ret_exist = 0;
 static int ret_type = 0;
@@ -140,26 +139,6 @@ static void symbol_pre(TreeNode * t)
           }
           break;
         case FuncK:
-          if(main_decl)
-          {
-            printError(mt, 2);
-            return;
-          }
-          if(strcmp(t->name, "main") == 0)
-          {
-            main_decl = 1;
-            mt = t;
-            if(t->child[0]->type != Void)
-            {
-              printError(t, 3);
-              return;
-            }
-            if(t->type != Void)
-            {
-              printError(t, 10);
-              return;
-            }
-          }
           local_location = -4;
           para_location = 0;
           if(t->type == Integer) symbol_insert(t->name, func_num++, F, 0, 0, 1, t->lineno, t);
@@ -198,11 +177,7 @@ static void symbol_pre(TreeNode * t)
             printError(t, 0);
             return;
           }
-          else if(l->is_array == 0)
-          {
-            printError(t, 6);
-            return;
-          }
+          if(l->is_array) t->is_array = 1;
           t->type = l->type;
           symbol_insert_global(t->name, t->lineno);
           break;
@@ -216,11 +191,7 @@ static void symbol_pre(TreeNode * t)
             printError(t, 0);
             return;
           }
-          else if(l->var_type != F)
-          {
-            printError(t, 7);
-            return;
-          }
+          if(l->var_type == F) t->is_func = 1;
           t->type = l->type;
           t->friend = l->node;
           symbol_insert_global(t->name, t->lineno);
@@ -237,7 +208,7 @@ static void symbol_post(TreeNode * t)
     if(t->nodekind == StmtK && t->kind.stmt == ComK)
     {
       local_location -= cur_scope->local_location_using;
-      if(TraceAnalyze && symbol_table_print) print_table(listing);
+      if(TraceAnalyze) print_table(listing);
       scope_pop();
     }
   }
@@ -247,26 +218,7 @@ void buildSymtab(TreeNode * syntaxTree)
 {
   scope_push();
   traverse(syntaxTree, symbol_pre, symbol_post);
-  scope_pop();
-}
-
-void printSymtab(TreeNode * syntaxTree)
-{
-  mt = NULL;
-  symbol_table_print = 1;
-  main_decl = 0;
-  ret_exist = 0;
-  ret_type = 0;
-
-  global_location = 0;
-  local_location = -4;
-  para_location = 0;
-  func_num = 0;
-
-  scope_push();
-  if (TraceAnalyze) fprintf(listing,"\nSymbol table:\n\n");
-  traverse(syntaxTree, symbol_pre, symbol_post);
-  if (TraceAnalyze) print_table(listing);
+  if(! Error) print_table(listing);
   scope_pop();
 }
 
@@ -287,6 +239,26 @@ static void check_pre(TreeNode * t)
           }
           break;
         case FuncK:
+          if(main_decl)
+          {
+            printError(mt, 2);
+            return;
+          }
+          if(strcmp(t->name, "main") == 0)
+          {
+            main_decl = 1;
+            mt = t;
+            if(t->child[0]->type != Void)
+            {
+              printError(t, 3);
+              return;
+            }
+            if(t->type != Void)
+            {
+              printError(t, 10);
+              return;
+            }
+          }
           ret_exist = 0;
           ret_type = t->type;
           break;
@@ -299,6 +271,20 @@ static void check_pre(TreeNode * t)
           if(!((t->child[0]->kind.exp == VarK && !t->child[0]->array_type && !t->child[0]->func_type) || (t->child[0]->kind.exp == ArrrK)))
           {
             printError(t, 9);
+            return;
+          }
+          break;
+        case ArrrK:
+          if(t->is_array == 0)
+          {
+            printError(t, 6);
+            return;
+          }
+          break;
+        case CallK:
+          if(t->is_func == 0)
+          {
+            printError(t, 7);
             return;
           }
           break;

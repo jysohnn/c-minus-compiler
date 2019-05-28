@@ -3,8 +3,6 @@
 
 void buildSymtab(TreeNode *);
 
-void printSymtab(TreeNode * syntaxTree);
-
 void typeCheck(TreeNode * syntaxTree);
 
 #endif
