@@ -8,7 +8,7 @@
 /* set NO_CODE to TRUE to get a compiler that does not
  * generate code
  */
-#define NO_CODE TRUE
+#define NO_CODE FALSE
 
 #include "util.h"
 #if NO_PARSE
@@ -19,6 +19,7 @@
 #include "analyze.h"
 #if !NO_CODE
 #include "cgen.h"
+#include "code.h"
 #endif
 #endif
 #endif
@@ -33,13 +34,14 @@ FILE * code;
 int EchoSource = FALSE;
 int TraceScan = FALSE;
 int TraceParse = FALSE;
-int TraceAnalyze = TRUE;
+int TraceAnalyze = FALSE;
 int TraceCode = FALSE;
 
 int Error = FALSE;
 
 int main( int argc, char * argv[] )
 { TreeNode * syntaxTree;
+  DecoNode * decoTree;
   char pgm[120]; /* source code file name */
   if (argc != 2)
     { fprintf(stderr,"usage: %s <filename>\n",argv[0]);
@@ -77,6 +79,12 @@ int main( int argc, char * argv[] )
     //if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
   }
 #if !NO_CODE
+  if(! Error)
+  {
+    decoTree = copyTree(syntaxTree);
+    printDecoTree(decoTree, 0);
+  }
+/*
   if (! Error)
   { char * codefile;
     int fnlen = strcspn(pgm,".");
@@ -91,6 +99,7 @@ int main( int argc, char * argv[] )
     codeGen(syntaxTree,codefile);
     fclose(code);
   }
+*/
 #endif
 #endif
 #endif

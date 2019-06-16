@@ -96,6 +96,7 @@ TreeNode * newExpNode(ExpKind kind)
     t->is_array = 0;
     t->is_func = 0;
     t->else_flag = t->return_flag = t->func_flag = 0;
+    t->is_array_name = 0;
   }
   return t;
 }

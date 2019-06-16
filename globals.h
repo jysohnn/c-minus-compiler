@@ -62,7 +62,57 @@ typedef struct treeNode
      int is_func;
      int op;
      int else_flag, return_flag, func_flag;
+
+     int mem_offset;
+     int compound_mem_size;
+     int is_array_name;
    } TreeNode;
+
+typedef enum
+{
+  DEF_GLOBAL_VAR,
+  DEF_GLOBAL_ARR,
+  DEF_FUNC,
+
+  GLOBAL_VAR,
+  GLOBAL_ARR,
+  GLOBAL_ARR_NAME,
+  LOCAL_VAR,
+  LOCAL_ARR,
+  LOCAL_ARR_NAME,
+  PARA_VAR,
+  PARA_ARR,
+  PARA_ARR_NAME,
+
+  EXP_OP,
+  EXP_CALL,
+  EXP_ASSIGN,
+  EXP_NUM,
+
+  STMT_COM,
+  STMT_IF,
+  STMT_IF_ELSE,
+  STMT_WHILE,
+  STMT_RET
+
+} DecoKind;
+
+typedef struct decoNode
+{
+  struct decoNode * child[MAXCHILDREN];
+  struct decoNode * sibling;
+  DecoKind deco_kind;
+  
+  int type;
+  char * name;
+  int val;
+  int arr_size;
+  int op_kind;
+  int offset;
+  int local_var_size;
+  int is_func_com;
+
+} DecoNode;
 
 /**************************************************/
 /***********   Flags for tracing       ************/

@@ -166,9 +166,11 @@ static void symbol_pre(TreeNode * t)
             return;
           }
           t->type = l->type;
-          if(l->node->kind.decl == ArrK) t->array_type = 1;
+          if(l->node->kind.decl == ArrK) t->array_type = 1, t->is_array_name = 1;
           if(l->node->kind.decl == FuncK) t->func_type = 1;
           symbol_insert_global(t->name, t->lineno);
+          t->mem_offset = l->memloc;
+          t->var_type = l->node->var_type;
           break;
         case ArrrK:
           l = symbol_lookup_global(t->name);
@@ -180,11 +182,25 @@ static void symbol_pre(TreeNode * t)
           if(l->is_array) t->is_array = 1;
           t->type = l->type;
           symbol_insert_global(t->name, t->lineno);
+          t->mem_offset = l->memloc;
+          t->var_type = l->node->var_type;
           break;
         case NumK:
           t->type = Integer;
           break;
         case CallK:
+          if(!strcmp(t->name, "input"))
+          {
+            t->type = 1;
+            t->is_func = 1;
+            break;
+          }
+          if(!strcmp(t->name, "output"))
+          {
+            t->type = 0;
+            t->is_func = 1;
+            break;
+          }
           l = symbol_lookup_global(t->name);
           if(l == NULL)
           {
@@ -208,6 +224,7 @@ static void symbol_post(TreeNode * t)
     if(t->nodekind == StmtK && t->kind.stmt == ComK)
     {
       local_location -= cur_scope->local_location_using;
+      t->compound_mem_size = cur_scope->local_location_using;
       if(TraceAnalyze) print_table(listing);
       scope_pop();
     }
@@ -218,7 +235,7 @@ void buildSymtab(TreeNode * syntaxTree)
 {
   scope_push();
   traverse(syntaxTree, symbol_pre, symbol_post);
-  if(! Error) print_table(listing);
+  if(! Error && TraceAnalyze) print_table(listing);
   scope_pop();
 }
 
@@ -375,6 +392,24 @@ static void check_post(TreeNode * t)
           }
           break;
         case CallK:
+          if(!strcmp(t->name, "input"))
+          {
+            if(t->child[0] != NULL)
+            {
+              printError(t, 13);
+              return;
+            }
+            break;
+          }
+          if(!strcmp(t->name, "output"))
+          {
+            if(!(t->child[0] != NULL && t->child[0]->sibling == NULL))
+            {
+              printError(t, 13);
+              return;
+            }
+            break;
+          }
           ft = t->friend;
           if(ft->child[0]->type == Void)
           {
