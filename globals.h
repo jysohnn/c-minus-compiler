@@ -27,6 +27,9 @@ typedef int TokenType;
 extern FILE* source; /* source code text file */
 extern FILE* listing; /* listing output text file */
 extern FILE* code; /* code text file for TM simulator */
+extern FILE* data;
+extern FILE* complete;
+
 
 extern int lineno; /* source line number for listing */
 

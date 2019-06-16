@@ -29,6 +29,10 @@ int lineno = 0;
 FILE * source;
 FILE * listing;
 FILE * code;
+FILE * data;
+FILE * code_r;
+FILE * data_r;
+FILE * complete;
 
 /* allocate and set tracing flags */
 int EchoSource = FALSE;
@@ -79,27 +83,52 @@ int main( int argc, char * argv[] )
     //if (TraceAnalyze) fprintf(listing,"\nType Checking Finished\n");
   }
 #if !NO_CODE
-  if(! Error)
+  if (! Error)
   {
     decoTree = copyTree(syntaxTree);
     printDecoTree(decoTree, 0);
-  }
-/*
-  if (! Error)
-  { char * codefile;
+
+    char * code_name;
+    char * data_name;
+    char * complete_name;
+    char tmp_str[100];
+
     int fnlen = strcspn(pgm,".");
-    codefile = (char *) calloc(fnlen+4, sizeof(char));
-    strncpy(codefile,pgm,fnlen);
-    strcat(codefile,".tm");
-    code = fopen(codefile,"w");
-    if (code == NULL)
-    { printf("Unable to open %s\n",codefile);
+    code_name = (char *) calloc(fnlen+7, sizeof(char));
+    data_name = (char *) calloc(fnlen+7, sizeof(char));
+    complete_name = (char *) calloc(fnlen+7, sizeof(char));
+    strncpy(code_name, pgm, fnlen);
+    strncpy(data_name, pgm, fnlen);
+    strncpy(complete_name, pgm, fnlen);
+    strcat(code_name, ".code");
+    strcat(data_name, ".data");
+    strcat(complete_name, ".s");
+    code = fopen(code_name, "w");
+    data = fopen(data_name, "w");
+    complete = fopen(complete_name, "w");
+
+    if (code == NULL || data == NULL || complete == NULL)
+    {
+      printf("Unable to open %s or %s or %s\n", code_name, data_name, complete_name);
       exit(1);
     }
-    codeGen(syntaxTree,codefile);
+    
+    initCodeGen();
+    codeGen(decoTree);
+
+    code_r = fopen(code_name, "r");
+    data_r = fopen(data_name, "r");
+
+    while(fgets(tmp_str, 100, code_r) != NULL) fprintf(complete, "%s", tmp_str);
+    fprintf(complete, "\n");
+    while(fgets(tmp_str, 100, data_r) != NULL) fprintf(complete, "%s", tmp_str);
+
     fclose(code);
+    fclose(data);
+    remove(code_name);
+    remove(data_name);
+    fclose(complete);
   }
-*/
 #endif
 #endif
 #endif
