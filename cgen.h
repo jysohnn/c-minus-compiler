@@ -3,6 +3,6 @@
 
 void initCodeGen();
 
-void codeGen(DecoNode * t);
+void codeGen(DecoNode * t, int ac, int as);
 
 #endif

@@ -408,6 +408,11 @@ static void check_post(TreeNode * t)
               printError(t, 13);
               return;
             }
+            if(!(t->child[0]->type == Integer && !t->child[0]->array_type && !t->child[0]->func_type))
+            {
+              printError(t, 13);
+              return;
+            }
             break;
           }
           ft = t->friend;

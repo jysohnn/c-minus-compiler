@@ -86,7 +86,7 @@ int main( int argc, char * argv[] )
   if (! Error)
   {
     decoTree = copyTree(syntaxTree);
-    printDecoTree(decoTree, 0);
+    // printDecoTree(decoTree, 0);
 
     char * code_name;
     char * data_name;
@@ -114,20 +114,23 @@ int main( int argc, char * argv[] )
     }
     
     initCodeGen();
-    codeGen(decoTree);
+    codeGen(decoTree, 0, 0);
+    fclose(code);
+    fclose(data);
 
     code_r = fopen(code_name, "r");
     data_r = fopen(data_name, "r");
 
-    while(fgets(tmp_str, 100, code_r) != NULL) fprintf(complete, "%s", tmp_str);
-    fprintf(complete, "\n");
     while(fgets(tmp_str, 100, data_r) != NULL) fprintf(complete, "%s", tmp_str);
+    fprintf(complete, "\n");
+    while(fgets(tmp_str, 100, code_r) != NULL) fprintf(complete, "%s", tmp_str);
+    
+    fclose(code_r);
+    fclose(data_r);
+    fclose(complete);
 
-    fclose(code);
-    fclose(data);
     remove(code_name);
     remove(data_name);
-    fclose(complete);
   }
 #endif
 #endif
