@@ -4,7 +4,7 @@
 #define ADDR 1
 #define GC gen_comment
 
-int print_comment = 1;
+int print_comment = 0;
 int label_num = 0;
 
 char * get_label()

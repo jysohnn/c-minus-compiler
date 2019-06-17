@@ -9,13 +9,10 @@ input_str: .asciiz "Input : "
 .globl main
 
 gcd:
-# COM STMT
 move $fp, $sp
 addiu $sp, $sp, -4
 sw $ra, 0($sp)
 addiu $sp, $sp, 0
-# IF
-# PARA VAR y
 lw $v0, 4($fp)
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
@@ -30,30 +27,20 @@ L1:
 li $v0, 1
 L2:
 beq $v0, $zero, L0
-# RETURN
-# PARA VAR x
 lw $v0, 8($fp)
 move $sp, $fp
 lw $ra, -4($sp)
 jr $ra
 L0:
-# RETURN
-# CALL gcd
-# PARA 0
-# PARA VAR y
 lw $v0, 4($fp)
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# PARA 1
-# PARA VAR x
 lw $v0, 8($fp)
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# PARA VAR x
 lw $v0, 8($fp)
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# PARA VAR y
 lw $v0, 4($fp)
 lw $t0, 0($sp)
 addiu $sp, $sp, 4
@@ -61,7 +48,6 @@ move $t1, $v0
 div $v0, $t0, $t1
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# PARA VAR y
 lw $v0, 4($fp)
 lw $t0, 0($sp)
 addiu $sp, $sp, 4
@@ -88,17 +74,13 @@ lw $ra, 0($sp)
 addiu $sp, $sp, 4
 jr $ra
 main:
-# COM STMT
 move $fp, $sp
 addiu $sp, $sp, -4
 sw $ra, 0($sp)
 addiu $sp, $sp, -8
-# ASSIGN
-# LOCAL VAR a
 addiu $v0, $fp, -8
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# CALL input
 li $v0, 4
 la $a0, input_str
 syscall
@@ -108,12 +90,9 @@ lw $t0, 0($sp)
 addiu $sp, $sp, 4
 move $t1, $v0
 sw $t1, 0($t0)
-# ASSIGN
-# LOCAL VAR b
 addiu $v0, $fp, -12
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# CALL input
 li $v0, 4
 la $a0, input_str
 syscall
@@ -123,15 +102,9 @@ lw $t0, 0($sp)
 addiu $sp, $sp, 4
 move $t1, $v0
 sw $t1, 0($t0)
-# CALL output
-# CALL gcd
-# PARA 0
-# LOCAL VAR a
 lw $v0, -8($fp)
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
-# PARA 1
-# LOCAL VAR b
 lw $v0, -12($fp)
 addiu $sp, $sp, -4
 sw $v0, 0($sp)
