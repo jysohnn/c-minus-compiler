@@ -246,27 +246,8 @@ void codeGen(DecoNode * t, int ac, int as)
             {
                 sprintf(tmp_str, "PARA %d", i);
                 GC(tmp_str);
-                switch(s->deco_kind)
-                {
-                    case GLOBAL_ARR_NAME:
-                        sprintf(tmp_str, "GLOBAL ARR NAME %s", s->name);
-                        GC(tmp_str);
-                        gen_global_var(s, ADDR);
-                        break;
-                    case LOCAL_ARR_NAME:
-                        sprintf(tmp_str, "LOCAL ARR NAME %s", s->name);
-                        GC(tmp_str);
-                        gen_local_var(s, ADDR);
-                        break;
-                    case PARA_ARR_NAME:
-                        sprintf(tmp_str, "PARA ARR NAME %s", s->name);
-                        GC(tmp_str);
-                        fprintf(code, "lw $v0, %d($fp)\n", s->offset);
-                        break;
-                    default:
-                        codeGen(s, 0, 1);
-                        break;
-                }
+
+                codeGen(s, 0, 1);
                 fprintf(code, "addiu $sp, $sp, -4\n");
                 fprintf(code, "sw $v0, 0($sp)\n");
                 s = s->sibling;
