@@ -21,4 +21,4 @@ code.o : code.c code.h cm.tab.c cm.tab.h globals.h
 cgen.o : cgen.c cgen.h cm.tab.c cm.tab.h globals.h
 	gcc -W -c cgen.c
 clean:
-	rm project4_3 main.o util.o lex.yy.o lex.yy.c cm.tab.o cm.tab.c cm.tab.h cm.output analyze.o symtab.o code.o cgen.o
+	rm project4_3 main.o util.o lex.yy.o lex.yy.c cm.tab.o cm.tab.c cm.tab.h cm.output analyze.o symtab.o code.o cgen.o *.s
