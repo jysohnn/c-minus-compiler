@@ -1,8 +1,6 @@
 #include "globals.h"
 #include "code.h"
 
-int func_compound_mem_size;
-
 DecoNode * newDecoNode(DecoKind deco_kind)
 {
     DecoNode * t = (DecoNode *)malloc(sizeof(DecoNode));
@@ -62,11 +60,7 @@ DecoNode * copyTree(TreeNode * t)
             {
                 dt = newDecoNode(STMT_COM);
                 dt->local_var_size = t->compound_mem_size;
-                if(t->func_flag)
-                {
-                    dt->is_func_com = 1;
-                    func_compound_mem_size = t->compound_mem_size;
-                }
+                if(t->func_flag) dt->is_func_com = 1;
                 dt->child[0] = copyTree(t->child[1]);
                 already_child = 1;
             }
@@ -76,11 +70,7 @@ DecoNode * copyTree(TreeNode * t)
                 else dt = newDecoNode(STMT_IF_ELSE);
             }
             else if(t->kind.stmt == IterK) dt = newDecoNode(STMT_WHILE);
-            else if(t->kind.stmt == RetK)
-            {
-                dt = newDecoNode(STMT_RET);
-                dt->local_var_size = func_compound_mem_size;
-            }
+            else if(t->kind.stmt == RetK) dt = newDecoNode(STMT_RET);
         }
         else if(t->nodekind == ExpK)
         {
