@@ -391,9 +391,8 @@ void codeGen(DecoNode * t, int ac, int as)
             GC("RETURN");
             already_child = 1;
             codeGen(t->child[0], 0, 0);
-            fprintf(code, "addiu $sp, $sp, %d\n", -1 * t->local_var_size);
-            fprintf(code, "lw $ra, 0($sp)\n");
-            fprintf(code, "addiu $sp, $sp, 4\n");
+            fprintf(code, "move $sp, $fp\n");
+            fprintf(code, "lw $ra, -4($sp)\n");
             fprintf(code, "jr $ra\n");
             break;
     }
