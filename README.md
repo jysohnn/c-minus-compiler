@@ -5,7 +5,7 @@ C- Compiler Project
 
 ```
 $ make
-$ ./project4_3 filename.c
+$ ./cminus filename.c
 $ spim load filename.s
 ```
 
